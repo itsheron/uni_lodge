@@ -17,6 +17,15 @@ header {
     padding: 0.75rem 0;
     text-align: center;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 2rem;
+}
+
+.header-content {
+    flex: 1;
+    text-align: center;
 }
 
 header h1 {
@@ -27,6 +36,26 @@ header h1 {
 header p {
     font-size: 0.9rem;
     opacity: 0.9;
+}
+
+.auth-section {
+    position: absolute;
+    right: 2rem;
+}
+
+.auth-button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+}
+
+.auth-button:hover {
+    background-color: #218838;
 }
 
 /* Search Container */
@@ -170,6 +199,16 @@ header p {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        padding: 1rem;
+    }
+    
+    .auth-section {
+        position: static;
+        margin-top: 0.5rem;
+    }
+    
     .main-container {
         flex-direction: column;
     }

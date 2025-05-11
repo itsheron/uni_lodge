@@ -10,8 +10,13 @@
 </head>
 <body>
     <header>
-        <h1>Georgia Tech Housing Finder</h1>
-        <p>Find apartments and housing near Georgia Institute of Technology</p>
+        <div class="header-content">
+            <h1>Georgia Tech Housing Finder</h1>
+            <p>Find apartments and housing near Georgia Institute of Technology</p>
+        </div>
+        <div class="auth-section">
+            <button class="auth-button" onclick="window.location.href='login.html'">Login</button>
+        </div>
     </header>
 
     <div class="search-container">
@@ -37,7 +42,9 @@
     </div>
 
     <div class="main-container">
-        <div class="sidebar">
+        <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
+        
+        <div class="sidebar" id="sidebar">
             <div class="filter-section">
                 <h3>Filters</h3>
                 <label>
@@ -73,7 +80,7 @@
                 </div>
             </div>
 
-            <button class="post-listing-btn" onclick="postListing()">Post Your Listing</button>
+            <button class="post-listing-btn" onclick="checkAuthAndPostListing()">Post Your Listing</button>
         </div>
 
         <div id="map"></div>
@@ -81,12 +88,22 @@
 
     <script>
         // Initialize the map
-        const map = L.map('map').setView([33.7756, -84.3963], 14);
+        const map = L.map('map', {
+            center: [33.7756, -84.3963],
+            zoom: 15,
+            zoomControl: true
+        });
 
-        // Add OpenStreetMap tiles
+        // Add OpenStreetMap tiles with a cleaner style
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 18
         }).addTo(map);
+
+        // Keep the map position properly set even when sidebar opens/closes
+        map.on('resize', function() {
+            map.invalidateSize();
+        });
 
         // Add Georgia Tech marker
         const georgiatech = L.marker([33.7756, -84.3963]).addTo(map)
@@ -129,11 +146,48 @@
             // This would open a modal or navigate to a details page
         }
 
-        // Function to post a new listing
-        function postListing() {
-            alert('Opening post listing form...');
-            // This would open a form to add new listings
+        // Function to check if user is logged in before posting
+        function checkAuthAndPostListing() {
+            // Check if user is logged in (you can implement this with your auth system)
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (!isLoggedIn) {
+                // Redirect to login page if not logged in
+                window.location.href = 'login.html?redirect=post-listing';
+            } else {
+                // Show the post listing modal or navigate to post listing page
+                window.location.href = 'post-listing.html';
+            }
         }
+
+        // Function to toggle sidebar
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            
+            // Trigger map resize after sidebar animation completes
+            setTimeout(() => {
+                map.invalidateSize();
+            }, 300);
+        }
+
+        // Check if user is logged in and update UI accordingly
+        function checkAuthStatus() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userName = localStorage.getItem('userName');
+            const authButton = document.querySelector('.auth-button');
+            
+            if (isLoggedIn && userName) {
+                authButton.textContent = userName;
+                authButton.onclick = showUserMenu; // You can implement a dropdown menu
+            } else {
+                authButton.textContent = 'Login';
+                authButton.onclick = () => window.location.href = 'login.html';
+            }
+        }
+
+        // Call checkAuthStatus on page load
+        window.addEventListener('load', checkAuthStatus);
     </script>
 </body>
 </html>
