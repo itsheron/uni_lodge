@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Georgia Tech Housing Finder</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+    <link rel="stylesheet" href="main_styles.css">
+</head>
+<body>
+    <header>
+        <h1>Georgia Tech Housing Finder</h1>
+        <p>Find apartments and housing near Georgia Institute of Technology</p>
+    </header>
+
+    <div class="search-container">
+        <div class="search-bar">
+            <input type="text" placeholder="Search by address or neighborhood..." id="searchInput">
+            <select id="priceRange">
+                <option value="">Price Range</option>
+                <option value="0-800">$0 - $800</option>
+                <option value="800-1200">$800 - $1,200</option>
+                <option value="1200-1600">$1,200 - $1,600</option>
+                <option value="1600-2000">$1,600 - $2,000</option>
+                <option value="2000+">$2,000+</option>
+            </select>
+            <select id="bedrooms">
+                <option value="">Bedrooms</option>
+                <option value="studio">Studio</option>
+                <option value="1">1 Bedroom</option>
+                <option value="2">2 Bedrooms</option>
+                <option value="3">3+ Bedrooms</option>
+            </select>
+            <button onclick="searchListings()">Search</button>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="filter-section">
+                <h3>Filters</h3>
+                <label>
+                    <input type="checkbox" id="petFriendly"> Pet Friendly
+                </label>
+                <label>
+                    <input type="checkbox" id="furnished"> Furnished
+                </label>
+                <label>
+                    <input type="checkbox" id="parking"> Parking Available
+                </label>
+                <label>
+                    <input type="checkbox" id="laundry"> Laundry Facilities
+                </label>
+            </div>
+
+            <div id="listings">
+                <!-- Sample listings -->
+                <div class="listing-card" onclick="focusOnMap(33.7756, -84.3963)">
+                    <div class="listing-price">$850/month</div>
+                    <div class="listing-info">1 Bedroom • 0.3 miles from campus</div>
+                    <div class="listing-info">Midtown West</div>
+                </div>
+                <div class="listing-card" onclick="focusOnMap(33.7790, -84.4010)">
+                    <div class="listing-price">$1,200/month</div>
+                    <div class="listing-info">2 Bedrooms • 0.7 miles from campus</div>
+                    <div class="listing-info">Home Park</div>
+                </div>
+                <div class="listing-card" onclick="focusOnMap(33.7730, -84.3950)">
+                    <div class="listing-price">$1,450/month</div>
+                    <div class="listing-info">2 Bedrooms • 0.5 miles from campus</div>
+                    <div class="listing-info">Midtown East</div>
+                </div>
+            </div>
+
+            <button class="post-listing-btn" onclick="postListing()">Post Your Listing</button>
+        </div>
+
+        <div id="map"></div>
+    </div>
+
+    <script>
+        // Initialize the map
+        const map = L.map('map').setView([33.7756, -84.3963], 14);
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Add Georgia Tech marker
+        const georgiatech = L.marker([33.7756, -84.3963]).addTo(map)
+            .bindPopup('<b>Georgia Institute of Technology</b><br>Atlanta, GA')
+            .openPopup();
+
+        // Sample apartment markers
+        const apartments = [
+            { name: "Student Housing Complex", lat: 33.7756, lng: -84.3963, price: "$850", beds: "1 BR" },
+            { name: "Campus View Apartments", lat: 33.7790, lng: -84.4010, price: "$1,200", beds: "2 BR" },
+            { name: "Tech Square Lofts", lat: 33.7730, lng: -84.3950, price: "$1,450", beds: "2 BR" },
+            { name: "Midtown Gardens", lat: 33.7820, lng: -84.3930, price: "$950", beds: "1 BR" }
+        ];
+
+        // Add apartment markers to map
+        apartments.forEach(apt => {
+            L.marker([apt.lat, apt.lng])
+                .addTo(map)
+                .bindPopup(`<b>${apt.name}</b><br>${apt.price} • ${apt.beds}<br><button onclick="viewDetails('${apt.name}')">View Details</button>`);
+        });
+
+        // Function to focus on specific map location
+        function focusOnMap(lat, lng) {
+            map.setView([lat, lng], 16);
+        }
+
+        // Function to handle search
+        function searchListings() {
+            const searchTerm = document.getElementById('searchInput').value;
+            const priceRange = document.getElementById('priceRange').value;
+            const bedrooms = document.getElementById('bedrooms').value;
+            
+            console.log('Searching for:', { searchTerm, priceRange, bedrooms });
+            // Add search functionality here
+        }
+
+        // Function to view apartment details
+        function viewDetails(apartmentName) {
+            alert(`Viewing details for: ${apartmentName}`);
+            // This would open a modal or navigate to a details page
+        }
+
+        // Function to post a new listing
+        function postListing() {
+            alert('Opening post listing form...');
+            // This would open a form to add new listings
+        }
+    </script>
+</body>
+</html>
