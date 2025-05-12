@@ -15,7 +15,7 @@
                 <ul>
                     <li><a href="main.html">Home</a></li>
                     <li class="active"><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="post-listing.html">Post Listing</a></li>
+                    <li><a href="post.html">Post Listing</a></li>
                 </ul>
             </nav>
         </div>
@@ -25,10 +25,18 @@
         </div>
         
         <div class="auth-section">
-            <span id="userName">Welcome, User!</span>
-            <button class="auth-button" onclick="handleLogout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
+            <button id="userName" class="auth-button logged-in" onclick="toggleUserMenu()">
+                <i class="fas fa-user-circle"></i> Welcome, User!
             </button>
+            <!-- User Menu Dropdown (hidden by default) -->
+            <div class="user-dropdown" id="userDropdown">
+                <a href="account-settings.html" class="dropdown-item">
+                    <i class="fas fa-user-cog"></i> Edit Account
+                </a>
+                <a href="javascript:void(0)" onclick="confirmLogout()" class="dropdown-item">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
         </div>
     </header>
 
@@ -98,10 +106,10 @@
             <div class="quick-actions">
                 <h2>Quick Actions</h2>
                 <div class="action-buttons">
-                    <button class="action-btn primary" onclick="window.location.href='post-listing.html'">
+                    <button class="action-btn primary" onclick="window.location.href='post.html'">
                         <span>➕</span>Post New Listing
                     </button>
-                    <button class="action-btn" onclick="window.location.href='index.html'">
+                    <button class="action-btn" onclick="window.location.href='main.html'">
                         <span>🔍</span>Browse Properties
                     </button>
                     <button class="action-btn" onclick="switchTab('myListings')">
@@ -115,7 +123,7 @@
         <section id="myListings" class="tab-content">
             <div class="listings-header">
                 <h2>My Listings</h2>
-                <button class="action-btn primary" onclick="window.location.href='post-listing.html'">
+                <button class="action-btn primary" onclick="window.location.href='post.html'">
                     ➕ Post New Listing
                 </button>
             </div>
@@ -245,7 +253,102 @@
         </section>
     </main>
 
+    <!-- Logout Confirmation Modal -->
+    <div class="modal" id="logoutModal">
+        <div class="modal-content">
+            <span class="close" onclick="closeLogoutModal()">&times;</span>
+            <h2>Confirm Logout</h2>
+            <p>Are you sure you want to log out?</p>
+            <div class="modal-buttons">
+                <button class="btn-cancel" onclick="closeLogoutModal()">Cancel</button>
+                <button class="btn-confirm" onclick="handleLogout()">Logout</button>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            if (!localStorage.getItem('isLoggedIn')) {
+                window.location.href = 'login.html?redirect=dashboard.html';
+                return;
+            }
+            
+            // Get user info from localStorage
+            const userName = localStorage.getItem('userName');
+            const userEmail = localStorage.getItem('userEmail');
+            
+            if (userName) {
+                // Update username in welcome message
+                const userNameBtn = document.getElementById('userName');
+                if (userNameBtn) {
+                    userNameBtn.innerHTML = `<i class="fas fa-user-circle"></i> ${userName}`;
+                }
+                
+                // Update settings form
+                const settingsNameField = document.getElementById('settingsName');
+                const settingsEmailField = document.getElementById('settingsEmail');
+                
+                if (settingsNameField) {
+                    settingsNameField.value = userName;
+                }
+                
+                if (settingsEmailField && userEmail) {
+                    settingsEmailField.value = userEmail;
+                }
+            }
+        });
+
+        // User dropdown menu toggle
+        function toggleUserMenu() {
+            document.getElementById('userDropdown').classList.toggle('show');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            // If the click is outside the user menu and user button
+            if (!e.target.closest('#userDropdown') && !e.target.closest('#userName')) {
+                const dropdown = document.getElementById('userDropdown');
+                if (dropdown && dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+
+        // Show logout confirmation modal
+        function confirmLogout() {
+            const logoutModal = document.getElementById('logoutModal');
+            if (logoutModal) {
+                logoutModal.style.display = 'block';
+            }
+        }
+
+        // Close logout confirmation modal
+        function closeLogoutModal() {
+            const logoutModal = document.getElementById('logoutModal');
+            if (logoutModal) {
+                logoutModal.style.display = 'none';
+            }
+        }
+
+        // Handle logout with confirmation modal
+        function handleLogout() {
+            // Clear all authentication data from localStorage
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userEmail');
+            
+            // Redirect to main page
+            window.location.href = 'main.html';
+            
+            // Close the modal if it's open
+            closeLogoutModal();
+            
+            // Prevent the default behavior of the button
+            return false;
+        }
+
         // Tab switching functionality
         function switchTab(tabName) {
             // Hide all tabs
@@ -265,36 +368,13 @@
             document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
         }
 
-        // Initialize page
-        function initDashboard() {
-            // Get user info from localStorage
-            const userName = localStorage.getItem('userName');
-            const userEmail = localStorage.getItem('userEmail');
-            
-            if (userName) {
-                document.getElementById('userName').textContent = `Welcome, ${userName}!`;
-                document.getElementById('settingsName').value = userName;
-                document.getElementById('settingsEmail').value = userEmail;
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const logoutModal = document.getElementById('logoutModal');
+            if (event.target == logoutModal) {
+                logoutModal.style.display = "none";
             }
-            
-            // Check if user is logged in
-            if (!localStorage.getItem('isLoggedIn')) {
-                window.location.href = 'login.html';
-            }
-        }
-
-        // Logout functionality
-        function handleLogout() {
-            if (confirm('Are you sure you want to log out?')) {
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('userName');
-                localStorage.removeItem('userEmail');
-                window.location.href = 'index.html';
-            }
-        }
-
-        // Initialize when page loads
-        window.addEventListener('load', initDashboard);
+        };
     </script>
 </body>
 </html>

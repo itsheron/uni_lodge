@@ -15,9 +15,9 @@
         <div class="nav-section">
             <nav class="main-nav">
                 <ul>
-                    <li class="active"><a href="index.html">Home</a></li>
+                    <li class="active"><a href="main.html">Home</a></li>
                     <li><a href="dashboard.html">Dashboard</a></li>
-                    <li><a href="post-listing.html">Post Listing</a></li>
+                    <li><a href="post.html">Post Listing</a></li>
                 </ul>
             </nav>
         </div>
@@ -190,10 +190,10 @@
             
             if (!isLoggedIn) {
                 // Redirect to login page if not logged in
-                window.location.href = 'login.html?redirect=post-listing';
+                window.location.href = 'login.html?redirect=post';
             } else {
                 // Show the post listing modal or navigate to post listing page
-                window.location.href = 'post-listing.html';
+                window.location.href = 'post.html';
             }
         }
 

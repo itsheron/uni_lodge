@@ -15,12 +15,13 @@ body {
 header {
     background-color: #003057;
     color: white;
-    padding: 1rem 2rem;
+    padding: 0.75rem 2rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     position: relative;
+    height: 70px; /* Add fixed height */
 }
 
 .nav-section {
@@ -28,6 +29,23 @@ header {
     text-align: left;
 }
 
+.header-content {
+    flex: 2;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+    font-weight: bold;
+}
+
+header p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* Main Navigation - Updated to match main.css */
 .main-nav ul {
     display: flex;
     list-style: none;
@@ -60,20 +78,12 @@ header {
     background-color: #fff;
 }
 
-.header-content {
-    flex: 2;
-    text-align: center;
-}
-
-.header-content h1 {
-    font-size: 1.5rem;
-}
-
+/* Auth Section */
 .auth-section {
     flex: 1;
     display: flex;
-    align-items: center;
     justify-content: flex-end;
+    align-items: center;
     gap: 1rem;
 }
 
@@ -82,24 +92,26 @@ header {
 }
 
 .auth-button {
-    background-color: #dc3545;
+    background-color: #007bff;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    font-weight: bold;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
 .auth-button:hover {
-    background-color: #c82333;
+    background-color: #218838;
 }
 
 .auth-button i {
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 
 /* Tab Navigation */
@@ -572,6 +584,55 @@ input:checked + .slider:before {
     margin-top: 1rem;
 }
 
+/* User Dropdown Menu */
+.user-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin-top: 0.75rem;
+    min-width: 180px;
+    z-index: 1050;
+    overflow: hidden;
+    display: none;
+}
+
+.user-dropdown.show {
+    display: block;
+    animation: fadeInDown 0.3s ease;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: #333;
+    text-decoration: none;
+    gap: 0.75rem;
+    transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+    background-color: #f5f5f5;
+}
+
+.dropdown-item i {
+    width: 20px;
+    text-align: center;
+    color: #003057;
+}
+
+.dropdown-item:last-child {
+    color: #dc3545;
+    border-top: 1px solid #eee;
+}
+
+.dropdown-item:last-child i {
+    color: #dc3545;
+}
+
 /* Animations */
 @keyframes fadeIn {
     from {
@@ -584,17 +645,27 @@ input:checked + .slider:before {
     }
 }
 
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
-        gap: 1rem;
-        text-align: center;
         padding: 1rem;
     }
     
     .nav-section {
         order: 2;
+        margin-top: 1rem;
     }
     
     .main-nav ul {
@@ -607,9 +678,9 @@ input:checked + .slider:before {
     }
     
     .auth-section {
-        order: 3;
-        width: 100%;
-        justify-content: center;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
     }
     
     .tab-navigation {
@@ -651,5 +722,12 @@ input:checked + .slider:before {
     .form-group label {
         min-width: 100%;
         margin-bottom: 0.5rem;
+    }
+    
+    .user-dropdown {
+        position: fixed;
+        top: 4rem;
+        right: 1rem;
+        width: 200px;
     }
 }
